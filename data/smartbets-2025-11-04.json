@@ -1,0 +1,27 @@
+﻿{
+  "date": "2025-11-04",
+  "generated_at_utc": "2025-11-04T09:10:38Z",
+  "bets": [
+    {
+      "id": "SAMPLE-0001",
+      "fixture_id": 123456,
+      "league": { "id": 39, "name": "Premier League", "country": "England", "season": 2025, "round": "Regular Season - 11" },
+      "home": "Arsenal",
+      "away": "Tottenham",
+      "kickoff_utc": "2025-11-05T15:30:00Z",
+      "market": "Over/Under",
+      "market_params": { "line": 2.5 },
+      "pick": "Over 2.5",
+      "probability": 0.68,
+      "confidence_color": "green",
+      "odds": null,
+      "ev": null,
+      "stake": 10,
+      "ai_reasoning": "Both teams average >1.7 xGF in last 5; Arsenal home goals trend strong.",
+      "status": "pending",
+      "result_value": null,
+      "settled_at_utc": null,
+      "tags": ["SmartBet","MVP"]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://footballbettingbuddi.dev/schemas/smartbets.schema.json",
+  "title": "SmartBets Daily File",
+  "type": "object",
+  "required": ["date", "bets"],
+  "properties": {
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "ISO date of publication (Europe/Sofia AM batch)" },
+    "generated_at_utc": { "type": "string", "format": "date-time" },
+    "bets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id","fixture_id","league","home","away","kickoff_utc","market","pick","probability","confidence_color","ai_reasoning","status"],
+        "properties": {
+          "id": { "type": "string", "description": "ULID/UUID for the bet" },
+          "fixture_id": { "type": "integer", "description": "API-Football fixture id" },
+          "league": {
+            "type": "object",
+            "required": ["id","name","country","season"],
+            "properties": {
+              "id": { "type": "integer" },
+              "name": { "type": "string" },
+              "country": { "type": "string" },
+              "season": { "type": "integer" },
+              "round": { "type": "string" }
+            }
+          },
+          "home": { "type": "string" },
+          "away": { "type": "string" },
+          "kickoff_utc": { "type": "string", "format": "date-time" },
+          "market": {
+            "type": "string",
+            "enum": ["1X2","Over/Under","BTTS","Asian Handicap","Corners","Cards","Draw No Bet","Double Chance","Correct Score"]
+          },
+          "market_params": { "type": "object", "additionalProperties": true, "description": "e.g. {\"line\":2.5} for Over/Under" },
+          "pick": { "type": "string", "description": "e.g. Over 2.5, Home, BTTS Yes, +0.25" },
+          "probability": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidence_color": { "type": "string", "enum": ["green","yellow","red"] },
+          "odds": { "type": ["number","null"], "description": "Decimal odds if available" },
+          "ev": { "type": ["number","null"], "description": "Expected value = p*odds - (1-p)" },
+          "stake": { "type": "number", "default": 10 },
+          "ai_reasoning": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending","won","lost","void"] },
+          "result_value": { "type": ["number","null"], "description": "e.g., total goals or corners at FT" },
+          "settled_at_utc": { "type": ["string","null"], "format": "date-time" },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
