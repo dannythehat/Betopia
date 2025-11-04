@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { promises as fs } from "fs";
+import { computePL } from "./pl.js";
 
 const HOST = "127.0.0.1";
 const PORT = 8081;
@@ -14,6 +15,7 @@ const DATA_DIR   = path.join(ROOT_DIR, "data");
 const PUBLIC_DIR = path.join(__dirname, "public");
 
 const app = express();
+app.use(express.json()); // <-- parse JSON bodies
 
 // Basic CORS (MVP): allow local frontends
 app.use(cors({
@@ -22,7 +24,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type","Authorization"]
 }));
 
-// Health endpoint
+// Health
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
@@ -42,35 +44,46 @@ function sofiaTodayISO() {
   return `${y}-${m}-${d}`;
 }
 
-// API: return today's Smart Bets file (Europe/Sofia)
+// Smart bets JSON for today
 app.get("/api/smart-bets", async (req, res) => {
   const date = sofiaTodayISO();
   const filePath = path.join(DATA_DIR, `smartbets-${date}.json`);
   try {
     const raw = await fs.readFile(filePath, "utf8");
-    const json = JSON.parse(raw);
-    res.json(json);
+    res.json(JSON.parse(raw));
   } catch (err) {
-    if (err.code === "ENOENT") {
-      return res.status(404).json({ status: "error", message: `No smartbets file for ${date}` });
-    }
+    if (err.code === "ENOENT") return res.status(404).json({ status: "error", message: `No smartbets file for ${date}` });
     console.error("smart-bets error:", err);
     res.status(500).json({ status: "error", message: "Failed to load smart bets." });
   }
 });
 
-// Static site
-app.use(express.static(PUBLIC_DIR));
-
-// Root info (fallback)
-app.get("/", (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "index.html"));
+// P/L compute using today's file. Query overrides: ?stake=10&accaStake=5
+app.get("/api/pl/compute", async (req, res) => {
+  const date = sofiaTodayISO();
+  const filePath = path.join(DATA_DIR, `smartbets-${date}.json`);
+  try {
+    const raw = await fs.readFile(filePath, "utf8");
+    const data = JSON.parse(raw);
+    const stake = Number(req.query.stake ?? 10);
+    const accaStake = Number(req.query.accaStake ?? 5);
+    const summary = computePL(data.bets || [], stake, accaStake);
+    res.json({ date, stake, accaStake, ...summary });
+  } catch (err) {
+    if (err.code === "ENOENT") return res.status(404).json({ status: "error", message: `No smartbets file for ${date}` });
+    console.error("pl/compute error:", err);
+    res.status(500).json({ status: "error", message: "Failed to compute PL." });
+  }
 });
 
-// Start server
+// Static UI
+app.use(express.static(PUBLIC_DIR));
+app.get("/", (req, res) => res.sendFile(path.join(PUBLIC_DIR, "index.html")));
+
 app.listen(PORT, HOST, () => {
   console.log(`Minimal API listening on http://${HOST}:${PORT}`);
   console.log(`Health: http://${HOST}:${PORT}/api/health`);
   console.log(`UI:     http://${HOST}:${PORT}/`);
   console.log(`Bets:   http://${HOST}:${PORT}/api/smart-bets`);
+  console.log(`P/L:    http://${HOST}:${PORT}/api/pl/compute`);
 });
