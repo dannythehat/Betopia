@@ -1,0 +1,37 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>FootballBettingBuddi — Today’s Smart Bets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0b0b12; color:#e8e6ff; }
+    header { padding:20px; background:linear-gradient(90deg,#0b0b12,#1a1030 50%,#241245); border-bottom:1px solid #2a2151; }
+    h1 { margin:0; font-size:20px; letter-spacing:0.3px; }
+    #status { font-size:12px; opacity:0.8; margin-top:6px; }
+    main { padding:20px; max-width: 980px; margin: 0 auto; }
+    .card { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:16px; margin-bottom:12px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .badge { font-size:12px; padding:3px 8px; border-radius:999px; border:1px solid #3a2a7f; }
+    .green { background:#11311f; border-color:#2a914a; }
+    .yellow{ background:#322d10; border-color:#a5972a; }
+    .red   { background:#381313; border-color:#b54949; }
+    .muted { opacity:0.8; }
+    .pick  { font-weight:600; }
+    .reason{ margin-top:8px; font-size:13px; opacity:0.95; }
+    .grid  { display:grid; grid-template-columns: 1fr auto; gap:8px; }
+    .odds  { font-variant-numeric: tabular-nums; opacity:0.9; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚽ FootballBettingBuddi — Today’s Smart Bets</h1>
+    <div id="status" class="muted">Loading…</div>
+  </header>
+  <main>
+    <div id="list"></div>
+  </main>
+  <script src="./main.js" type="module"></script>
+</body>
+</html>
