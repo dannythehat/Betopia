@@ -22,6 +22,10 @@
     .reason{ margin-top:8px; font-size:13px; opacity:0.95; }
     .grid  { display:grid; grid-template-columns: 1fr auto; gap:8px; }
     .odds  { font-variant-numeric: tabular-nums; opacity:0.9; }
+    .summary-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
+    .kpi { background:#101021; border:1px solid #2a2151; border-radius:12px; padding:12px; text-align:center; }
+    .kpi .label { font-size:12px; opacity:0.75; }
+    .kpi .value { font-size:20px; font-weight:700; margin-top:4px; }
   </style>
 </head>
 <body>
@@ -30,6 +34,19 @@
     <div id="status" class="muted">Loading…</div>
   </header>
   <main>
+    <!-- P/L summary appears here -->
+    <div id="summary" class="card">
+      <div class="summary-grid">
+        <div class="kpi"><div class="label">Singles P/L</div><div id="kpi-singles-pl" class="value">—</div></div>
+        <div class="kpi"><div class="label">Acca P/L</div><div id="kpi-acca-pl" class="value">—</div></div>
+        <div class="kpi"><div class="label">ROI</div><div id="kpi-roi" class="value">—</div></div>
+      </div>
+      <div class="muted" style="margin-top:8px;font-size:12px">
+        Source: <code>/api/pl/compute?stake=10&amp;accaStake=5</code>
+      </div>
+    </div>
+
+    <!-- Bets list -->
     <div id="list"></div>
   </main>
   <script src="./main.js" type="module"></script>
