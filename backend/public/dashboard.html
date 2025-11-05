@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <title>My Dashboard — FootballBettingBuddi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root { color-scheme: dark; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0b0b12; color:#e8e6ff; }
@@ -11,7 +12,7 @@
     h1 { margin:0; font-size:22px; letter-spacing:0.3px; }
     h2 { font-size:18px; margin:24px 0 12px; opacity:0.9; }
     #status { font-size:12px; opacity:0.8; margin-top:6px; }
-    main { padding:20px; max-width: 1200px; margin: 0 auto; }
+    main { padding:20px; max-width: 1400px; margin: 0 auto; }
     
     /* Navigation */
     nav { display:flex; gap:12px; margin-top:16px; }
@@ -33,16 +34,44 @@
     .kpi .value.red { color:#b54949; }
     .kpi .subtext { font-size:12px; opacity:0.7; margin-top:6px; }
     
+    /* Analytics Section */
+    .analytics-section { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:20px; margin-bottom:24px; }
+    .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .section-title { font-size:16px; font-weight:600; opacity:0.9; }
+    .btn-export { 
+      padding:8px 16px; border-radius:8px; background:#5a4a9f; 
+      border:1px solid #7a6abf; color:#fff; cursor:pointer; 
+      font-size:13px; font-weight:600; transition: all 0.2s;
+    }
+    .btn-export:hover { background:#7a6abf; transform: scale(1.05); }
+    
+    /* Chart Container */
+    .chart-container { position:relative; height:300px; margin-bottom:20px; }
+    
+    /* Performance Breakdown */
+    .breakdown-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin-top:20px; }
+    .breakdown-card { background:#0b0b12; border:1px solid #2a2151; border-radius:10px; padding:16px; }
+    .breakdown-title { font-size:13px; font-weight:600; opacity:0.8; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px; }
+    .breakdown-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #1a1a2e; }
+    .breakdown-item:last-child { border-bottom:none; }
+    .breakdown-label { font-size:13px; opacity:0.9; }
+    .breakdown-stats { display:flex; gap:16px; font-size:12px; }
+    .breakdown-stat { display:flex; flex-direction:column; align-items:flex-end; }
+    .breakdown-stat-label { opacity:0.6; font-size:10px; }
+    .breakdown-stat-value { font-weight:600; margin-top:2px; }
+    .breakdown-stat-value.green { color:#2a914a; }
+    .breakdown-stat-value.red { color:#b54949; }
+    
     /* Filters */
     .filters { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:16px; margin-bottom:20px; }
     .filter-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px; }
     .filter-group { display:flex; flex-direction:column; gap:6px; }
     .filter-group label { font-size:12px; opacity:0.8; font-weight:600; }
-    .filter-group select { 
+    .filter-group select, .filter-group input { 
       background:#0b0b12; border:1px solid #2a2151; border-radius:8px; 
       padding:8px 12px; color:#e8e6ff; font-size:14px;
     }
-    .filter-group select:focus { outline:none; border-color:#5a4a9f; }
+    .filter-group select:focus, .filter-group input:focus { outline:none; border-color:#5a4a9f; }
     
     /* Bet Cards */
     .card { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:18px; margin-bottom:14px; transition: all 0.2s; position:relative; }
@@ -133,6 +162,34 @@
       </div>
     </div>
 
+    <!-- P/L Analytics -->
+    <div class="analytics-section">
+      <div class="section-header">
+        <h2 class="section-title">📈 Profit/Loss Analytics</h2>
+        <button class="btn-export" onclick="exportToCSV()">📥 Export CSV</button>
+      </div>
+      
+      <div class="chart-container">
+        <canvas id="plChart"></canvas>
+      </div>
+
+      <!-- Performance Breakdown -->
+      <div class="breakdown-grid">
+        <div class="breakdown-card">
+          <div class="breakdown-title">🏆 By League</div>
+          <div id="breakdown-league"></div>
+        </div>
+        <div class="breakdown-card">
+          <div class="breakdown-title">📊 By Market</div>
+          <div id="breakdown-market"></div>
+        </div>
+        <div class="breakdown-card">
+          <div class="breakdown-title">🎯 By Confidence</div>
+          <div id="breakdown-confidence"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Filters -->
     <div class="filters">
       <div class="filter-grid">
@@ -158,6 +215,14 @@
           </select>
         </div>
         <div class="filter-group">
+          <label>Date From</label>
+          <input type="date" id="filter-date-from" />
+        </div>
+        <div class="filter-group">
+          <label>Date To</label>
+          <input type="date" id="filter-date-to" />
+        </div>
+        <div class="filter-group">
           <label>Sort By</label>
           <select id="sort-by">
             <option value="date-desc">Newest First</option>
@@ -177,6 +242,7 @@
   <script>
     // LocalStorage key
     const STORAGE_KEY = 'fbb_saved_bets';
+    let plChart = null;
 
     // Load saved bets from localStorage
     function loadSavedBets() {
@@ -240,6 +306,219 @@
       roiEl.style.color = stats.roi > 0 ? '#2a914a' : stats.roi < 0 ? '#b54949' : '';
     }
 
+    // Render P/L Chart
+    function renderPLChart(bets) {
+      const settledBets = bets.filter(b => b.status === 'won' || b.status === 'lost')
+        .sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
+      
+      const stake = 10;
+      let cumulativePL = 0;
+      const chartData = settledBets.map(bet => {
+        if (bet.status === 'won') {
+          cumulativePL += (bet.odds - 1) * stake;
+        } else {
+          cumulativePL -= stake;
+        }
+        return {
+          x: new Date(bet.addedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+          y: cumulativePL
+        };
+      });
+
+      const ctx = document.getElementById('plChart');
+      if (plChart) plChart.destroy();
+
+      plChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartData.map(d => d.x),
+          datasets: [{
+            label: 'Cumulative P/L (£)',
+            data: chartData.map(d => d.y),
+            borderColor: cumulativePL >= 0 ? '#2a914a' : '#b54949',
+            backgroundColor: cumulativePL >= 0 ? 'rgba(42, 145, 74, 0.1)' : 'rgba(181, 73, 73, 0.1)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#141426',
+              titleColor: '#e8e6ff',
+              bodyColor: '#e8e6ff',
+              borderColor: '#2a2151',
+              borderWidth: 1,
+              padding: 12,
+              displayColors: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: '#2a2151' },
+              ticks: { 
+                color: '#e8e6ff',
+                callback: value => `£${value.toFixed(0)}`
+              }
+            },
+            x: {
+              grid: { color: '#2a2151' },
+              ticks: { color: '#e8e6ff' }
+            }
+          }
+        }
+      });
+    }
+
+    // Calculate breakdown stats
+    function calculateBreakdown(bets, groupBy) {
+      const stake = 10;
+      const groups = {};
+      
+      bets.forEach(bet => {
+        const key = bet[groupBy] || 'Unknown';
+        if (!groups[key]) {
+          groups[key] = { total: 0, won: 0, lost: 0, pl: 0 };
+        }
+        groups[key].total++;
+        if (bet.status === 'won') {
+          groups[key].won++;
+          groups[key].pl += (bet.odds - 1) * stake;
+        } else if (bet.status === 'lost') {
+          groups[key].lost++;
+          groups[key].pl -= stake;
+        }
+      });
+
+      return Object.entries(groups)
+        .map(([name, stats]) => ({
+          name,
+          ...stats,
+          winRate: stats.won + stats.lost > 0 ? ((stats.won / (stats.won + stats.lost)) * 100).toFixed(1) : 0
+        }))
+        .sort((a, b) => b.pl - a.pl);
+    }
+
+    // Render breakdown section
+    function renderBreakdown(bets) {
+      const leagues = calculateBreakdown(bets, 'league');
+      const markets = calculateBreakdown(bets, 'market');
+      
+      // Confidence breakdown (extract from probability)
+      const confidenceBets = bets.map(b => ({
+        ...b,
+        confidence: b.probability >= 0.65 ? 'High (≥65%)' : b.probability >= 0.55 ? 'Medium (55-64%)' : 'Low (<55%)'
+      }));
+      const confidence = calculateBreakdown(confidenceBets, 'confidence');
+
+      document.getElementById('breakdown-league').innerHTML = leagues.slice(0, 5).map(item => `
+        <div class="breakdown-item">
+          <span class="breakdown-label">${item.name}</span>
+          <div class="breakdown-stats">
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">W/L</span>
+              <span class="breakdown-stat-value">${item.won}/${item.lost}</span>
+            </div>
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">Win%</span>
+              <span class="breakdown-stat-value">${item.winRate}%</span>
+            </div>
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">P/L</span>
+              <span class="breakdown-stat-value ${item.pl >= 0 ? 'green' : 'red'}">£${item.pl.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+
+      document.getElementById('breakdown-market').innerHTML = markets.map(item => `
+        <div class="breakdown-item">
+          <span class="breakdown-label">${item.name}</span>
+          <div class="breakdown-stats">
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">W/L</span>
+              <span class="breakdown-stat-value">${item.won}/${item.lost}</span>
+            </div>
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">Win%</span>
+              <span class="breakdown-stat-value">${item.winRate}%</span>
+            </div>
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">P/L</span>
+              <span class="breakdown-stat-value ${item.pl >= 0 ? 'green' : 'red'}">£${item.pl.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+
+      document.getElementById('breakdown-confidence').innerHTML = confidence.map(item => `
+        <div class="breakdown-item">
+          <span class="breakdown-label">${item.name}</span>
+          <div class="breakdown-stats">
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">W/L</span>
+              <span class="breakdown-stat-value">${item.won}/${item.lost}</span>
+            </div>
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">Win%</span>
+              <span class="breakdown-stat-value">${item.winRate}%</span>
+            </div>
+            <div class="breakdown-stat">
+              <span class="breakdown-stat-label">P/L</span>
+              <span class="breakdown-stat-value ${item.pl >= 0 ? 'green' : 'red'}">£${item.pl.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+    }
+
+    // Export to CSV
+    function exportToCSV() {
+      const bets = loadSavedBets();
+      if (bets.length === 0) {
+        alert('No bets to export');
+        return;
+      }
+
+      const headers = ['Date Added', 'Kickoff', 'League', 'Home Team', 'Away Team', 'Market', 'Selection', 'Odds', 'Probability', 'Status', 'P/L'];
+      const stake = 10;
+      
+      const rows = bets.map(bet => {
+        let pl = 0;
+        if (bet.status === 'won') pl = (bet.odds - 1) * stake;
+        else if (bet.status === 'lost') pl = -stake;
+        
+        return [
+          new Date(bet.addedAt).toLocaleDateString('en-GB'),
+          new Date(bet.kickoff).toLocaleString('en-GB'),
+          bet.league,
+          bet.homeTeam,
+          bet.awayTeam,
+          bet.market,
+          bet.selection,
+          bet.odds.toFixed(2),
+          (bet.probability * 100).toFixed(1) + '%',
+          bet.status,
+          '£' + pl.toFixed(2)
+        ];
+      });
+
+      const csv = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `football-betting-buddi-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     // Render bet card
     function renderBetCard(bet) {
       const statusEmoji = {
@@ -295,6 +574,8 @@
     function filterAndSortBets(bets) {
       const statusFilter = document.getElementById('filter-status').value;
       const marketFilter = document.getElementById('filter-market').value;
+      const dateFrom = document.getElementById('filter-date-from').value;
+      const dateTo = document.getElementById('filter-date-to').value;
       const sortBy = document.getElementById('sort-by').value;
 
       // Filter
@@ -304,6 +585,14 @@
       }
       if (marketFilter !== 'all') {
         filtered = filtered.filter(b => b.market === marketFilter);
+      }
+      if (dateFrom) {
+        filtered = filtered.filter(b => new Date(b.addedAt) >= new Date(dateFrom));
+      }
+      if (dateTo) {
+        const endDate = new Date(dateTo);
+        endDate.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(b => new Date(b.addedAt) <= endDate);
       }
 
       // Sort
@@ -325,6 +614,8 @@
       const allBets = loadSavedBets();
       const stats = calculateStats(allBets);
       renderSummary(stats);
+      renderPLChart(allBets);
+      renderBreakdown(allBets);
 
       const filteredBets = filterAndSortBets(allBets);
       const container = document.getElementById('bets-container');
@@ -351,6 +642,8 @@
     // Event listeners
     document.getElementById('filter-status').addEventListener('change', renderDashboard);
     document.getElementById('filter-market').addEventListener('change', renderDashboard);
+    document.getElementById('filter-date-from').addEventListener('change', renderDashboard);
+    document.getElementById('filter-date-to').addEventListener('change', renderDashboard);
     document.getElementById('sort-by').addEventListener('change', renderDashboard);
 
     // Initial render
