@@ -1,54 +1,356 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>FootballBettingBuddi — Today’s Smart Bets</title>
+  <title>FootballBettingBuddi — Smart Bets with Precision Analytics</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root { color-scheme: dark; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0b0b12; color:#e8e6ff; }
     header { padding:20px; background:linear-gradient(90deg,#0b0b12,#1a1030 50%,#241245); border-bottom:1px solid #2a2151; }
-    h1 { margin:0; font-size:20px; letter-spacing:0.3px; }
+    h1 { margin:0; font-size:22px; letter-spacing:0.3px; }
+    h2 { font-size:16px; margin:20px 0 12px; opacity:0.9; }
     #status { font-size:12px; opacity:0.8; margin-top:6px; }
-    main { padding:20px; max-width: 980px; margin: 0 auto; }
-    .card { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:16px; margin-bottom:12px; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .badge { font-size:12px; padding:3px 8px; border-radius:999px; border:1px solid #3a2a7f; }
-    .green { background:#11311f; border-color:#2a914a; }
-    .yellow{ background:#322d10; border-color:#a5972a; }
-    .red   { background:#381313; border-color:#b54949; }
-    .muted { opacity:0.8; }
-    .pick  { font-weight:600; }
-    .reason{ margin-top:8px; font-size:13px; opacity:0.95; }
-    .grid  { display:grid; grid-template-columns: 1fr auto; gap:8px; }
-    .odds  { font-variant-numeric: tabular-nums; opacity:0.9; }
-    .summary-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
-    .kpi { background:#101021; border:1px solid #2a2151; border-radius:12px; padding:12px; text-align:center; }
-    .kpi .label { font-size:12px; opacity:0.75; }
-    .kpi .value { font-size:20px; font-weight:700; margin-top:4px; }
+    main { padding:20px; max-width: 1200px; margin: 0 auto; }
+    
+    /* Filters */
+    .filters { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:16px; margin-bottom:20px; }
+    .filter-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; }
+    .filter-group { display:flex; flex-direction:column; gap:6px; }
+    .filter-group label { font-size:12px; opacity:0.8; font-weight:600; }
+    .filter-group select, .filter-group input { 
+      background:#0b0b12; border:1px solid #2a2151; border-radius:8px; 
+      padding:8px 12px; color:#e8e6ff; font-size:14px;
+    }
+    .filter-group select:focus, .filter-group input:focus { 
+      outline:none; border-color:#5a4a9f; 
+    }
+    .filter-actions { display:flex; gap:8px; margin-top:12px; }
+    .btn { 
+      padding:8px 16px; border-radius:8px; border:1px solid #2a2151; 
+      background:#1a1030; color:#e8e6ff; cursor:pointer; font-size:14px;
+      transition: all 0.2s;
+    }
+    .btn:hover { background:#241245; border-color:#5a4a9f; }
+    .btn-primary { background:#5a4a9f; border-color:#7a6abf; }
+    .btn-primary:hover { background:#7a6abf; }
+    
+    /* Summary Cards */
+    .summary-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin-bottom:20px; }
+    .kpi { background:#141426; border:1px solid #2a2151; border-radius:12px; padding:14px; text-align:center; }
+    .kpi .label { font-size:11px; opacity:0.75; text-transform:uppercase; letter-spacing:0.5px; }
+    .kpi .value { font-size:24px; font-weight:700; margin-top:6px; }
+    .kpi .value.green { color:#2a914a; }
+    .kpi .value.yellow { color:#a5972a; }
+    .kpi .value.red { color:#b54949; }
+    
+    /* Bet Cards */
+    .card { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:18px; margin-bottom:14px; transition: all 0.2s; }
+    .card:hover { border-color:#5a4a9f; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(90,74,159,0.2); }
+    .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+    .match-info { flex:1; }
+    .teams { font-size:16px; font-weight:600; margin-bottom:6px; }
+    .league-badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; opacity:0.8; }
+    .kickoff { font-size:12px; opacity:0.7; margin-top:4px; }
+    
+    .confidence-badge { 
+      padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+    .confidence-badge.green { background:#11311f; border:1px solid #2a914a; color:#2a914a; }
+    .confidence-badge.yellow { background:#322d10; border:1px solid #a5972a; color:#a5972a; }
+    .confidence-badge.red { background:#381313; border:1px solid #b54949; color:#b54949; }
+    
+    .bet-details { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin:12px 0; }
+    .detail-item { background:#0b0b12; border:1px solid #2a2151; border-radius:8px; padding:10px; }
+    .detail-label { font-size:11px; opacity:0.7; text-transform:uppercase; letter-spacing:0.5px; }
+    .detail-value { font-size:16px; font-weight:600; margin-top:4px; }
+    
+    .ai-reasoning { 
+      background:#0b0b12; border-left:3px solid #5a4a9f; 
+      padding:12px; margin-top:12px; border-radius:6px; font-size:13px; 
+      line-height:1.5; opacity:0.95;
+    }
+    .ai-reasoning::before { 
+      content:"🤖 AI Analysis: "; 
+      font-weight:600; opacity:0.8; 
+    }
+    
+    .card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #2a2151; }
+    .tags { display:flex; gap:6px; flex-wrap:wrap; }
+    .tag { font-size:11px; padding:3px 8px; border-radius:4px; background:#1a1030; border:1px solid #2a2151; }
+    
+    .add-to-dashboard { 
+      padding:8px 16px; border-radius:8px; background:#5a4a9f; 
+      border:1px solid #7a6abf; color:#fff; cursor:pointer; 
+      font-size:13px; font-weight:600; transition: all 0.2s;
+    }
+    .add-to-dashboard:hover { background:#7a6abf; transform: scale(1.05); }
+    
+    .empty-state { text-align:center; padding:60px 20px; opacity:0.6; }
+    .empty-state svg { width:80px; height:80px; opacity:0.3; margin-bottom:16px; }
+    
+    .muted { opacity:0.7; }
+    .loading { text-align:center; padding:40px; opacity:0.6; }
   </style>
 </head>
 <body>
   <header>
-    <h1>⚽ FootballBettingBuddi — Today’s Smart Bets</h1>
-    <div id="status" class="muted">Loading…</div>
+    <h1>⚽ FootballBettingBuddi — Smart Bets with Precision Analytics</h1>
+    <div id="status" class="muted">Loading smart bets...</div>
   </header>
+  
   <main>
-    <!-- P/L summary appears here -->
-    <div id="summary" class="card">
-      <div class="summary-grid">
-        <div class="kpi"><div class="label">Singles P/L</div><div id="kpi-singles-pl" class="value">—</div></div>
-        <div class="kpi"><div class="label">Acca P/L</div><div id="kpi-acca-pl" class="value">—</div></div>
-        <div class="kpi"><div class="label">ROI</div><div id="kpi-roi" class="value">—</div></div>
+    <!-- Filters Section -->
+    <div class="filters">
+      <h2>🎯 Precision Filters</h2>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label for="filter-confidence">Confidence Level</label>
+          <select id="filter-confidence">
+            <option value="">All Confidence Levels</option>
+            <option value="green">🟢 High (≥65%)</option>
+            <option value="yellow">🟡 Medium (55-64%)</option>
+            <option value="red">🔴 Lower (50-54%)</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="filter-market">Market Type</label>
+          <select id="filter-market">
+            <option value="">All Markets</option>
+            <option value="Over/Under">Over/Under</option>
+            <option value="BTTS">Both Teams To Score</option>
+            <option value="1X2">Match Result (1X2)</option>
+            <option value="Asian Handicap">Asian Handicap</option>
+            <option value="Double Chance">Double Chance</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="filter-league">League</label>
+          <select id="filter-league">
+            <option value="">All Leagues</option>
+            <option value="Premier">Premier League</option>
+            <option value="La Liga">La Liga</option>
+            <option value="Serie A">Serie A</option>
+            <option value="Bundesliga">Bundesliga</option>
+            <option value="Ligue 1">Ligue 1</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="filter-minProb">Min Probability</label>
+          <input type="number" id="filter-minProb" placeholder="e.g., 0.65" step="0.05" min="0" max="1" />
+        </div>
+        
+        <div class="filter-group">
+          <label for="filter-minEV">Min Expected Value</label>
+          <input type="number" id="filter-minEV" placeholder="e.g., 0.1" step="0.05" />
+        </div>
+        
+        <div class="filter-group">
+          <label for="filter-sort">Sort By</label>
+          <select id="filter-sort">
+            <option value="probability">Probability (High to Low)</option>
+            <option value="ev">Expected Value (High to Low)</option>
+            <option value="odds">Odds (High to Low)</option>
+            <option value="kickoff">Kickoff Time</option>
+          </select>
+        </div>
       </div>
-      <div class="muted" style="margin-top:8px;font-size:12px">
-        Source: <code>/api/pl/compute?stake=10&amp;accaStake=5</code>
+      
+      <div class="filter-actions">
+        <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+        <button class="btn" onclick="resetFilters()">Reset</button>
       </div>
     </div>
-
-    <!-- Bets list -->
-    <div id="list"></div>
+    
+    <!-- Summary Analytics -->
+    <div id="summary-section">
+      <h2>📊 Analytics Summary</h2>
+      <div class="summary-grid">
+        <div class="kpi">
+          <div class="label">Total Bets</div>
+          <div id="kpi-total" class="value">—</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Avg Probability</div>
+          <div id="kpi-avg-prob" class="value">—</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Avg Expected Value</div>
+          <div id="kpi-avg-ev" class="value">—</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Avg Odds</div>
+          <div id="kpi-avg-odds" class="value">—</div>
+        </div>
+        <div class="kpi">
+          <div class="label">High Confidence</div>
+          <div id="kpi-green" class="value green">—</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Medium Confidence</div>
+          <div id="kpi-yellow" class="value yellow">—</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bets List -->
+    <div id="bets-section">
+      <h2>🎲 Smart Bets</h2>
+      <div id="list"></div>
+    </div>
   </main>
-  <script src="./main.js" type="module"></script>
+  
+  <script type="module">
+    let allBetsData = null;
+    
+    async function loadSmartBets(queryParams = '') {
+      const statusEl = document.getElementById('status');
+      const listEl = document.getElementById('list');
+      
+      try {
+        statusEl.textContent = 'Loading smart bets...';
+        const response = await fetch(`/api/smart-bets${queryParams}`);
+        const data = await response.json();
+        
+        if (data.status === 'error') {
+          throw new Error(data.message);
+        }
+        
+        allBetsData = data;
+        
+        // Update summary
+        updateSummary(data.summary);
+        
+        // Update status
+        statusEl.textContent = `Loaded ${data.summary.total_bets} bets for ${data.date} • Generated: ${new Date(data.generated_at).toLocaleString()}`;
+        
+        // Render bets
+        if (data.bets.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <div>No bets match your filters</div>
+            </div>
+          `;
+        } else {
+          listEl.innerHTML = data.bets.map(bet => renderBetCard(bet)).join('');
+        }
+      } catch (err) {
+        statusEl.textContent = `Error: ${err.message}`;
+        listEl.innerHTML = `<div class="empty-state">Failed to load smart bets</div>`;
+      }
+    }
+    
+    function updateSummary(summary) {
+      document.getElementById('kpi-total').textContent = summary.total_bets;
+      document.getElementById('kpi-avg-prob').textContent = `${(summary.avg_probability * 100).toFixed(1)}%`;
+      document.getElementById('kpi-avg-ev').textContent = summary.avg_ev;
+      document.getElementById('kpi-avg-odds').textContent = summary.avg_odds;
+      document.getElementById('kpi-green').textContent = summary.confidence_distribution.green;
+      document.getElementById('kpi-yellow').textContent = summary.confidence_distribution.yellow;
+    }
+    
+    function renderBetCard(bet) {
+      const kickoffDate = new Date(bet.kickoff_utc);
+      const confidenceIcon = bet.confidence_color === 'green' ? '🟢' : bet.confidence_color === 'yellow' ? '🟡' : '🔴';
+      
+      return `
+        <div class="card">
+          <div class="card-header">
+            <div class="match-info">
+              <div class="teams">${bet.home} vs ${bet.away}</div>
+              <div class="league-badge">
+                🏆 ${bet.league.name} • ${bet.league.country}
+              </div>
+              <div class="kickoff">⏰ ${kickoffDate.toLocaleString()}</div>
+            </div>
+            <div class="confidence-badge ${bet.confidence_color}">
+              ${confidenceIcon} ${(bet.probability * 100).toFixed(0)}%
+            </div>
+          </div>
+          
+          <div class="bet-details">
+            <div class="detail-item">
+              <div class="detail-label">Market</div>
+              <div class="detail-value">${bet.market}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Pick</div>
+              <div class="detail-value">${bet.pick}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Odds</div>
+              <div class="detail-value">${bet.odds ? bet.odds.toFixed(2) : 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Expected Value</div>
+              <div class="detail-value ${bet.ev > 0 ? 'green' : ''}">${bet.ev !== null ? bet.ev.toFixed(3) : 'N/A'}</div>
+            </div>
+          </div>
+          
+          <div class="ai-reasoning">
+            ${bet.ai_reasoning}
+          </div>
+          
+          <div class="card-footer">
+            <div class="tags">
+              ${bet.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+              <span class="tag">Stake: £${bet.stake}</span>
+            </div>
+            <button class="add-to-dashboard" onclick="addToDashboard('${bet.id}')">
+              + Add to Dashboard
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    
+    window.applyFilters = function() {
+      const params = new URLSearchParams();
+      
+      const confidence = document.getElementById('filter-confidence').value;
+      const market = document.getElementById('filter-market').value;
+      const league = document.getElementById('filter-league').value;
+      const minProb = document.getElementById('filter-minProb').value;
+      const minEV = document.getElementById('filter-minEV').value;
+      const sort = document.getElementById('filter-sort').value;
+      
+      if (confidence) params.append('confidence', confidence);
+      if (market) params.append('market', market);
+      if (league) params.append('league', league);
+      if (minProb) params.append('minProb', minProb);
+      if (minEV) params.append('minEV', minEV);
+      if (sort) params.append('sort', sort);
+      
+      loadSmartBets('?' + params.toString());
+    };
+    
+    window.resetFilters = function() {
+      document.getElementById('filter-confidence').value = '';
+      document.getElementById('filter-market').value = '';
+      document.getElementById('filter-league').value = '';
+      document.getElementById('filter-minProb').value = '';
+      document.getElementById('filter-minEV').value = '';
+      document.getElementById('filter-sort').value = 'probability';
+      loadSmartBets();
+    };
+    
+    window.addToDashboard = function(betId) {
+      // Placeholder for dashboard functionality
+      alert(`Bet ${betId} will be added to dashboard (coming in Day 7)`);
+      console.log('Adding bet to dashboard:', betId);
+    };
+    
+    // Initial load
+    loadSmartBets();
+  </script>
 </body>
 </html>
