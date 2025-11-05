@@ -1,14 +1,14 @@
-# 🎯 Vision - FootballBettingBuddi
+# 🎯 Vision - Betopia
 
 ## The Big Picture
 
-**FootballBettingBuddi** aims to become the **most trusted AI-powered football betting intelligence platform** globally, democratizing access to professional-grade betting insights through transparent, explainable AI predictions.
+**Betopia** aims to become the **most trusted AI-powered sports betting intelligence platform** globally, democratizing access to professional-grade betting insights through transparent, explainable AI predictions.
 
 ---
 
 ## Core Mission
 
-> **Transform football data into actionable betting insights that empower users to make smarter, data-driven decisions with confidence.**
+> **Transform sports data into actionable betting insights that empower users to make smarter, data-driven decisions with confidence.**
 
 ---
 
@@ -26,7 +26,7 @@
 - **Continuous Learning**: Models improve based on historical performance
 
 ### 3. **Comprehensive Coverage**
-- **Global Leagues**: Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and 50+ more
+- **Global Sports**: Football (Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and 50+ more leagues), with cricket, tennis, basketball coming soon
 - **Multi-Market Support**: 
   - Match Result (1X2)
   - Over/Under Goals
@@ -73,7 +73,7 @@
 - 🎯 1M+ active users globally
 - 🎯 AI-powered accumulator (ACCA) builder
 - 🎯 Personalized recommendation engine
-- 🎯 Multi-sport expansion (basketball, tennis, etc.)
+- 🎯 Multi-sport expansion (cricket, tennis, basketball, etc.)
 - 🎯 Blockchain integration for transparency
 - 🎯 Potential acquisition or IPO
 
@@ -351,11 +351,13 @@
 
 ## Final Thoughts
 
-FootballBettingBuddi is more than a betting tips platform—it's a **data intelligence layer** that brings transparency, education, and empowerment to football betting.
+Betopia is more than a betting tips platform—it's a **data intelligence layer** that brings transparency, education, and empowerment to sports betting.
 
 By combining cutting-edge AI with user-centric design and responsible gambling principles, we're building a platform that users can trust and rely on for years to come.
 
 **Our North Star**: Help users make smarter betting decisions through transparent, explainable AI predictions.
+
+**Your Betting Utopia - Where Smart Bets Live**
 
 ---
 
