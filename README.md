@@ -74,6 +74,7 @@ FootballBettingBuddi is an **AI-powered football betting intelligence platform**
 - [x] Frontend React shell (Vite + TypeScript)
 - [x] PowerShell launcher (`dev.ps1`) for local development
 - [x] Logging infrastructure (`logs/backend.log`, `logs/frontend.log`)
+- [x] AI-assisted workflow management system
 
 ### 🚧 In Progress
 - [ ] `/api/status` diagnostics endpoint
@@ -90,7 +91,7 @@ FootballBettingBuddi is an **AI-powered football betting intelligence platform**
 ## 🛠️ Tech Stack
 
 | Layer | Technology | Purpose |
-|-------|-----------|---------|
+|-------|-----------|------------|
 | **Frontend** | React, Vite, TypeScript | Modern UI with fast HMR |
 | **Backend** | Node.js, Express | RESTful API server |
 | **AI/ML** | OpenAI GPT, Custom Models | Predictions + reasoning |
@@ -148,12 +149,52 @@ cd ..
 
 ---
 
+## 🤖 AI-Assisted Development Workflow
+
+This project includes a **workflow management system** designed for AI-assisted development with OpenAI.
+
+### Quick Start with AI
+
+```powershell
+# Get current project state for AI context
+.\workflow.ps1 -Summary
+
+# See what to work on next
+.\workflow.ps1 -Next
+
+# Start a task
+.\workflow.ps1 -Start "2.1"
+
+# Mark task complete
+.\workflow.ps1 -Complete "2.1"
+```
+
+### Key Files for AI Development
+
+- **`WORKFLOW_STATE.json`** - Machine-readable current state (source of truth)
+- **`workflow.ps1`** - PowerShell script for workflow management
+- **`AI_CONTEXT.md`** - Guide for OpenAI chat sessions
+- **`DAILY_PLAN.md`** - Detailed daily task breakdown
+
+### Daily Workflow with OpenAI
+
+1. **Morning**: Run `.\workflow.ps1 -Summary` and paste output to OpenAI
+2. **During Dev**: OpenAI helps with code, you test locally
+3. **After Task**: Run `.\workflow.ps1 -Complete "X.X"` and commit
+4. **Repeat**: Move to next task with `.\workflow.ps1 -Next`
+
+**See [AI_CONTEXT.md](AI_CONTEXT.md) for complete guide**
+
+---
+
 ## 📚 Documentation
 
 - **[VISION.md](VISION.md)** - Long-term product vision and goals
 - **[ROADMAP.md](ROADMAP.md)** - Development phases and milestones
 - **[STATUS.md](STATUS.md)** - Current progress and daily updates
 - **[DAILY_PLAN.md](DAILY_PLAN.md)** - Small-batch daily tasks for AI-assisted development
+- **[AI_CONTEXT.md](AI_CONTEXT.md)** - Guide for OpenAI chat sessions
+- **[WORKFLOW_STATE.json](WORKFLOW_STATE.json)** - Current workflow state (machine-readable)
 - **[ABOUT.md](ABOUT.md)** - Project background and context
 
 ---
@@ -233,6 +274,7 @@ cd ..
 
 ### Phase 1: MVP Foundation (Current)
 - ✅ Repository setup and documentation
+- ✅ AI-assisted workflow management
 - 🚧 Backend API with health/status endpoints
 - 🚧 Frontend shell with React/Vite
 - 📋 Fixtures browser with filters
