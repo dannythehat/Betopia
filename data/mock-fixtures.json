@@ -1,0 +1,700 @@
+{
+  "fixtures": [
+    {
+      "id": "fix_001",
+      "homeTeam": "Manchester City",
+      "awayTeam": "Arsenal",
+      "league": {
+        "name": "Premier League",
+        "country": "ENG",
+        "logo": "https://media.api-sports.io/football/leagues/39.png"
+      },
+      "kickoff": "2025-11-08T15:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Etihad Stadium",
+        "city": "Manchester"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.10,
+          "draw": 3.60,
+          "away": 3.40
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.85,
+          "under": 2.00
+        },
+        "bothTeamsToScore": {
+          "yes": 1.70,
+          "no": 2.15
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.30,
+          "homeOrAway": 1.40,
+          "drawOrAway": 1.75
+        },
+        "asianHandicap": {
+          "line": -0.5,
+          "home": 1.95,
+          "away": 1.90
+        }
+      },
+      "form": {
+        "home": "WWWDW",
+        "away": "WWLWW"
+      },
+      "headToHead": {
+        "played": 10,
+        "homeWins": 5,
+        "draws": 2,
+        "awayWins": 3
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.95
+      }
+    },
+    {
+      "id": "fix_002",
+      "homeTeam": "Liverpool",
+      "awayTeam": "Chelsea",
+      "league": {
+        "name": "Premier League",
+        "country": "ENG",
+        "logo": "https://media.api-sports.io/football/leagues/39.png"
+      },
+      "kickoff": "2025-11-08T17:30:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Anfield",
+        "city": "Liverpool"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 1.75,
+          "draw": 3.80,
+          "away": 4.50
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.75,
+          "under": 2.10
+        },
+        "bothTeamsToScore": {
+          "yes": 1.65,
+          "no": 2.25
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.20,
+          "homeOrAway": 1.25,
+          "drawOrAway": 2.00
+        },
+        "asianHandicap": {
+          "line": -1.0,
+          "home": 2.05,
+          "away": 1.80
+        }
+      },
+      "form": {
+        "home": "WWWWL",
+        "away": "WDLWD"
+      },
+      "headToHead": {
+        "played": 12,
+        "homeWins": 6,
+        "draws": 3,
+        "awayWins": 3
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.92
+      }
+    },
+    {
+      "id": "fix_003",
+      "homeTeam": "Real Madrid",
+      "awayTeam": "Barcelona",
+      "league": {
+        "name": "La Liga",
+        "country": "ESP",
+        "logo": "https://media.api-sports.io/football/leagues/140.png"
+      },
+      "kickoff": "2025-11-09T20:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Santiago Bernabéu",
+        "city": "Madrid"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.40,
+          "draw": 3.40,
+          "away": 2.90
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.90,
+          "under": 1.95
+        },
+        "bothTeamsToScore": {
+          "yes": 1.60,
+          "no": 2.35
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.40,
+          "homeOrAway": 1.50,
+          "drawOrAway": 1.60
+        },
+        "asianHandicap": {
+          "line": 0.0,
+          "home": 1.90,
+          "away": 1.95
+        }
+      },
+      "form": {
+        "home": "WWDWW",
+        "away": "WWWWL"
+      },
+      "headToHead": {
+        "played": 15,
+        "homeWins": 7,
+        "draws": 4,
+        "awayWins": 4
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.97
+      }
+    },
+    {
+      "id": "fix_004",
+      "homeTeam": "Atletico Madrid",
+      "awayTeam": "Sevilla",
+      "league": {
+        "name": "La Liga",
+        "country": "ESP",
+        "logo": "https://media.api-sports.io/football/leagues/140.png"
+      },
+      "kickoff": "2025-11-09T18:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Wanda Metropolitano",
+        "city": "Madrid"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 1.65,
+          "draw": 3.90,
+          "away": 5.20
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 2.05,
+          "under": 1.80
+        },
+        "bothTeamsToScore": {
+          "yes": 1.80,
+          "no": 2.05
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.15,
+          "homeOrAway": 1.20,
+          "drawOrAway": 2.20
+        },
+        "asianHandicap": {
+          "line": -1.0,
+          "home": 2.15,
+          "away": 1.75
+        }
+      },
+      "form": {
+        "home": "WDWWL",
+        "away": "LDLWD"
+      },
+      "headToHead": {
+        "played": 8,
+        "homeWins": 5,
+        "draws": 2,
+        "awayWins": 1
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.88
+      }
+    },
+    {
+      "id": "fix_005",
+      "homeTeam": "Inter Milan",
+      "awayTeam": "AC Milan",
+      "league": {
+        "name": "Serie A",
+        "country": "ITA",
+        "logo": "https://media.api-sports.io/football/leagues/135.png"
+      },
+      "kickoff": "2025-11-10T19:45:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "San Siro",
+        "city": "Milan"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.20,
+          "draw": 3.50,
+          "away": 3.20
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.95,
+          "under": 1.90
+        },
+        "bothTeamsToScore": {
+          "yes": 1.75,
+          "no": 2.10
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.35,
+          "homeOrAway": 1.45,
+          "drawOrAway": 1.70
+        },
+        "asianHandicap": {
+          "line": -0.5,
+          "home": 2.00,
+          "away": 1.85
+        }
+      },
+      "form": {
+        "home": "WWWDW",
+        "away": "WDWLW"
+      },
+      "headToHead": {
+        "played": 10,
+        "homeWins": 4,
+        "draws": 4,
+        "awayWins": 2
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.93
+      }
+    },
+    {
+      "id": "fix_006",
+      "homeTeam": "Juventus",
+      "awayTeam": "Napoli",
+      "league": {
+        "name": "Serie A",
+        "country": "ITA",
+        "logo": "https://media.api-sports.io/football/leagues/135.png"
+      },
+      "kickoff": "2025-11-10T17:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Allianz Stadium",
+        "city": "Turin"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.50,
+          "draw": 3.30,
+          "away": 2.80
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 2.00,
+          "under": 1.85
+        },
+        "bothTeamsToScore": {
+          "yes": 1.70,
+          "no": 2.20
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.45,
+          "homeOrAway": 1.55,
+          "drawOrAway": 1.55
+        },
+        "asianHandicap": {
+          "line": 0.0,
+          "home": 1.85,
+          "away": 2.00
+        }
+      },
+      "form": {
+        "home": "WDWDW",
+        "away": "WWLWW"
+      },
+      "headToHead": {
+        "played": 12,
+        "homeWins": 5,
+        "draws": 4,
+        "awayWins": 3
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.90
+      }
+    },
+    {
+      "id": "fix_007",
+      "homeTeam": "Bayern Munich",
+      "awayTeam": "Borussia Dortmund",
+      "league": {
+        "name": "Bundesliga",
+        "country": "GER",
+        "logo": "https://media.api-sports.io/football/leagues/78.png"
+      },
+      "kickoff": "2025-11-11T17:30:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Allianz Arena",
+        "city": "Munich"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 1.55,
+          "draw": 4.20,
+          "away": 5.80
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.70,
+          "under": 2.20
+        },
+        "bothTeamsToScore": {
+          "yes": 1.60,
+          "no": 2.40
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.10,
+          "homeOrAway": 1.15,
+          "drawOrAway": 2.40
+        },
+        "asianHandicap": {
+          "line": -1.5,
+          "home": 2.25,
+          "away": 1.70
+        }
+      },
+      "form": {
+        "home": "WWWWW",
+        "away": "WWDLW"
+      },
+      "headToHead": {
+        "played": 14,
+        "homeWins": 9,
+        "draws": 2,
+        "awayWins": 3
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.96
+      }
+    },
+    {
+      "id": "fix_008",
+      "homeTeam": "Tottenham",
+      "awayTeam": "Newcastle",
+      "league": {
+        "name": "Premier League",
+        "country": "ENG",
+        "logo": "https://media.api-sports.io/football/leagues/39.png"
+      },
+      "kickoff": "2025-11-08T12:30:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Tottenham Hotspur Stadium",
+        "city": "London"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.00,
+          "draw": 3.70,
+          "away": 3.60
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.80,
+          "under": 2.05
+        },
+        "bothTeamsToScore": {
+          "yes": 1.68,
+          "no": 2.20
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.28,
+          "homeOrAway": 1.35,
+          "drawOrAway": 1.80
+        },
+        "asianHandicap": {
+          "line": -0.5,
+          "home": 1.90,
+          "away": 1.95
+        }
+      },
+      "form": {
+        "home": "WDWLW",
+        "away": "WWDWL"
+      },
+      "headToHead": {
+        "played": 8,
+        "homeWins": 4,
+        "draws": 2,
+        "awayWins": 2
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.89
+      }
+    },
+    {
+      "id": "fix_009",
+      "homeTeam": "PSG",
+      "awayTeam": "Marseille",
+      "league": {
+        "name": "Ligue 1",
+        "country": "FRA",
+        "logo": "https://media.api-sports.io/football/leagues/61.png"
+      },
+      "kickoff": "2025-11-09T20:45:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Parc des Princes",
+        "city": "Paris"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 1.45,
+          "draw": 4.50,
+          "away": 6.50
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.65,
+          "under": 2.30
+        },
+        "bothTeamsToScore": {
+          "yes": 1.75,
+          "no": 2.10
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.08,
+          "homeOrAway": 1.12,
+          "drawOrAway": 2.60
+        },
+        "asianHandicap": {
+          "line": -1.5,
+          "home": 2.10,
+          "away": 1.80
+        }
+      },
+      "form": {
+        "home": "WWWWW",
+        "away": "WLDWL"
+      },
+      "headToHead": {
+        "played": 10,
+        "homeWins": 7,
+        "draws": 2,
+        "awayWins": 1
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.94
+      }
+    },
+    {
+      "id": "fix_010",
+      "homeTeam": "Manchester United",
+      "awayTeam": "Aston Villa",
+      "league": {
+        "name": "Premier League",
+        "country": "ENG",
+        "logo": "https://media.api-sports.io/football/leagues/39.png"
+      },
+      "kickoff": "2025-11-09T14:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Old Trafford",
+        "city": "Manchester"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 1.90,
+          "draw": 3.75,
+          "away": 3.90
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.88,
+          "under": 1.97
+        },
+        "bothTeamsToScore": {
+          "yes": 1.72,
+          "no": 2.15
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.25,
+          "homeOrAway": 1.32,
+          "drawOrAway": 1.85
+        },
+        "asianHandicap": {
+          "line": -0.5,
+          "home": 1.88,
+          "away": 1.97
+        }
+      },
+      "form": {
+        "home": "WDLWW",
+        "away": "WWWDL"
+      },
+      "headToHead": {
+        "played": 9,
+        "homeWins": 5,
+        "draws": 2,
+        "awayWins": 2
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.91
+      }
+    },
+    {
+      "id": "fix_011",
+      "homeTeam": "Roma",
+      "awayTeam": "Lazio",
+      "league": {
+        "name": "Serie A",
+        "country": "ITA",
+        "logo": "https://media.api-sports.io/football/leagues/135.png"
+      },
+      "kickoff": "2025-11-10T14:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Stadio Olimpico",
+        "city": "Rome"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.30,
+          "draw": 3.45,
+          "away": 3.10
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 1.92,
+          "under": 1.93
+        },
+        "bothTeamsToScore": {
+          "yes": 1.73,
+          "no": 2.13
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.38,
+          "homeOrAway": 1.48,
+          "drawOrAway": 1.65
+        },
+        "asianHandicap": {
+          "line": 0.0,
+          "home": 1.92,
+          "away": 1.93
+        }
+      },
+      "form": {
+        "home": "WDWLW",
+        "away": "WWDLW"
+      },
+      "headToHead": {
+        "played": 11,
+        "homeWins": 5,
+        "draws": 3,
+        "awayWins": 3
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.87
+      }
+    },
+    {
+      "id": "fix_012",
+      "homeTeam": "Valencia",
+      "awayTeam": "Real Betis",
+      "league": {
+        "name": "La Liga",
+        "country": "ESP",
+        "logo": "https://media.api-sports.io/football/leagues/140.png"
+      },
+      "kickoff": "2025-11-09T15:00:00Z",
+      "status": "scheduled",
+      "venue": {
+        "name": "Mestalla",
+        "city": "Valencia"
+      },
+      "score": null,
+      "markets": {
+        "matchResult": {
+          "home": 2.60,
+          "draw": 3.25,
+          "away": 2.75
+        },
+        "overUnder": {
+          "line": 2.5,
+          "over": 2.05,
+          "under": 1.80
+        },
+        "bothTeamsToScore": {
+          "yes": 1.78,
+          "no": 2.08
+        },
+        "doubleChance": {
+          "homeOrDraw": 1.48,
+          "homeOrAway": 1.58,
+          "drawOrAway": 1.52
+        },
+        "asianHandicap": {
+          "line": 0.0,
+          "home": 1.88,
+          "away": 1.97
+        }
+      },
+      "form": {
+        "home": "LDWDL",
+        "away": "WDWLW"
+      },
+      "headToHead": {
+        "played": 7,
+        "homeWins": 3,
+        "draws": 2,
+        "awayWins": 2
+      },
+      "metadata": {
+        "lastUpdated": "2025-11-05T00:00:00Z",
+        "dataSource": "Mock",
+        "confidence": 0.85
+      }
+    }
+  ]
+}
