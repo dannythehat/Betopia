@@ -51,6 +51,62 @@ node scripts/generate-smart-bets.js 2025-11-05
 
 ---
 
+### `update-mock-results.js`
+**Purpose**: Generate mock bet results for testing dashboard P/L tracking
+
+**Usage**:
+```bash
+# Generate with default 55% win rate
+node scripts/update-mock-results.js
+
+# Generate with custom win rate
+node scripts/update-mock-results.js --win-rate=0.6
+```
+
+**Features**:
+- ✅ Generates realistic bet outcomes (won/lost/void)
+- ✅ Probability-weighted results (higher probability bets win more often)
+- ✅ Configurable win rate (default: 55%)
+- ✅ Calculates P/L and ROI
+- ✅ Outputs to `data/mock-results.json`
+- ✅ Creates browser-ready script (`data/load-mock-results.js`)
+
+**Output Example**:
+```
+🎲 Mock Results Update Script
+================================
+
+Target Win Rate: 55%
+
+📊 Results Summary:
+-------------------
+Total Bets: 5
+Pending: 1
+Won: 2 ✅
+Lost: 2 ❌
+Void: 0 ⚪
+
+Actual Win Rate: 50.0%
+Total P/L: £0.50 📈
+ROI: 1.3%
+
+✅ Mock results saved to: data/mock-results.json
+✅ Browser script saved to: data/load-mock-results.js
+```
+
+**How to Use Results**:
+1. Run the script to generate mock results
+2. Open browser console on dashboard page
+3. Copy contents of `data/load-mock-results.js`
+4. Paste into console and press Enter
+5. Refresh the page to see updated P/L
+
+**Configuration**:
+- `WIN_RATE`: Target win rate (0-1, default: 0.55)
+- `stake`: Bet stake amount (default: £10)
+
+---
+
 ## 🔧 Development Scripts
 
 ### PowerShell Launcher (`dev.ps1`)
@@ -74,6 +130,8 @@ Located in root directory. Starts backend server.
 
 ## 🎯 Planned Scripts
 
+- [x] `generate-smart-bets.js` - Generate daily Smart Bets ✅
+- [x] `update-mock-results.js` - Generate mock bet results ✅
 - [ ] `update-results.js` - Fetch real match results and settle bets
 - [ ] `calculate-pl.js` - Calculate profit/loss for date range
 - [ ] `export-csv.js` - Export bets to CSV format
@@ -120,3 +178,4 @@ node --version  # Should be v16+
 - [DAILY_PLAN.md](../DAILY_PLAN.md) - Development workflow
 - [AI_CONTEXT.md](../AI_CONTEXT.md) - AI workflow guide
 - [QUICKREF.md](../QUICKREF.md) - Quick reference card
+- [WEEK2_DAY7_SUMMARY.md](../docs/WEEK2_DAY7_SUMMARY.md) - Day 7 completion summary
