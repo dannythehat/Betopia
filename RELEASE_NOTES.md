@@ -1,172 +1,210 @@
-# 🎉 Release Notes - v0.0.1-mvp-skeleton
-
-**Release Date**: 2025-11-05  
-**Status**: Pre-release / MVP Foundation  
-**Phase**: Phase 1 - Core Infrastructure
+# 🎉 Release Notes
 
 ---
 
-## 📦 What's Included
+## 📦 v0.0.3-smart-bets (2025-11-05)
 
-This release marks the completion of the **MVP skeleton** with a complete **AI-assisted development workflow system**.
+**Status**: Pre-release / Week 2 Complete  
+**Phase**: Phase 1 - MVP Foundation  
+**Focus**: Smart Bets System with P/L Analytics
 
-### ✅ Core Infrastructure
-- **Backend API**: Express server on `127.0.0.1:8081`
-  - `GET /api/health` - Health check endpoint
-  - Logging infrastructure
-  - Error handling
-- **Frontend Shell**: React + Vite + TypeScript on `http://localhost:3000`
-  - Health check display
-  - Modern UI foundation
-  - Fast HMR development
-- **PowerShell Automation**: `dev.ps1` launcher
-  - Start/stop/status commands
-  - Automatic log management
-  - Process monitoring
+### 🎯 What's New
 
-### 🤖 AI-Assisted Development System
-- **WORKFLOW_STATE.json**: Machine-readable state tracking
-  - Current phase, week, day tracking
-  - Completed/active/next tasks
-  - Acceptance criteria per task
-  - Metrics and progress tracking
-- **workflow.ps1**: PowerShell workflow management
-  - `-Status`: Show current state
-  - `-Next`: Display next task
-  - `-Summary`: Generate AI context
-  - `-Start "X.X"`: Begin task
-  - `-Complete "X.X"`: Finish task
-- **AI_CONTEXT.md**: Complete OpenAI session guide
-- **QUICKREF.md**: Quick reference card
+#### Week 2 Complete: Smart Bets Foundation
+This release completes **Week 2** with a fully functional Smart Bets system including AI-powered bet generation, comprehensive analytics, and P/L tracking.
 
-### 📚 Comprehensive Documentation
-- **README.md**: Project overview, quick start, business model
-- **VISION.md**: Long-term goals, revenue model, competitive advantages
-- **ROADMAP.md**: Phased development plan (8 phases)
-- **STATUS.md**: Real-time progress tracking
-- **DAILY_PLAN.md**: Day-by-day task breakdown
-- **ABOUT.md**: Project background and context
+### ✅ Features Delivered
+
+#### Day 5: Smart Bets Generator
+- **AI-Powered Bet Generation**: `scripts/generate-smart-bets.js`
+  - Intelligent reasoning templates
+  - Expected Value (EV) calculation
+  - Confidence scoring (green/yellow/red)
+  - Multi-market support (Over/Under, BTTS, 1X2, Asian Handicap)
+  - Probability-based selection algorithm
+
+#### Day 6: Smart Bets API & UI
+- **Enhanced API**: `/api/smart-bets`
+  - Advanced filtering (confidence, market, league, probability, EV)
+  - Flexible sorting (probability, EV, odds, kickoff)
+  - Real-time analytics (avg probability, EV, odds)
+  - Confidence distribution metrics
+  - Market and league breakdowns
+- **Precision-Focused Frontend**: `backend/public/index.html`
+  - 6 filter options
+  - 6 real-time KPIs
+  - Color-coded confidence badges
+  - AI reasoning display
+  - "Add to Dashboard" functionality
+
+#### Day 7: User Dashboard
+- **Bet Tracking Dashboard**: `backend/public/dashboard.html`
+  - LocalStorage-based bet tracking
+  - 6 summary KPIs (Total, Pending, Won, Lost, Win Rate, P/L)
+  - Advanced filtering (status, market, sort)
+  - Add/remove bet functionality
+  - Toast notifications
+- **Navigation System**
+  - Consistent nav bar across all pages
+  - Smart Bets → Dashboard → Fixtures flow
+  - Active page highlighting
+
+#### Day 8: P/L Analytics (NEW!)
+- **Chart Visualization**
+  - Chart.js integration
+  - Cumulative P/L line chart
+  - Dynamic coloring (profit/loss)
+  - Interactive tooltips
+  - Responsive design
+- **CSV Export**
+  - One-click export
+  - Comprehensive data (all bet details + P/L)
+  - Timestamped filename
+  - Excel compatible
+- **Date Range Filtering**
+  - Date From/To filters
+  - Combined with status/market filters
+  - Inclusive range handling
+- **Performance Breakdowns**
+  - By League (top 5, W/L, Win%, P/L)
+  - By Market (all markets analyzed)
+  - By Confidence (High/Medium/Low validation)
 
 ---
 
-## 🎯 Key Features
+## 📊 Technical Details
 
-### For Developers
-- ✅ Clean repository structure
-- ✅ Working backend + frontend
-- ✅ PowerShell automation
-- ✅ AI workflow management
-- ✅ Comprehensive documentation
-- ✅ Git-friendly workflow
+### New Files
+- `scripts/generate-smart-bets.js` - Smart bets generator
+- `scripts/update-mock-results.js` - Mock results for testing
+- `data/smartbets-2025-11-05.json` - Generated smart bets
+- `docs/API_SMART_BETS.md` - API documentation
+- `docs/WEEK2_DAY8_SUMMARY.md` - Day 8 summary
 
-### For AI Collaboration
-- ✅ State tracking (WORKFLOW_STATE.json)
-- ✅ Context generation (`.\workflow.ps1 -Summary`)
-- ✅ Task management (start/complete)
-- ✅ Acceptance criteria per task
-- ✅ Automatic updates
+### Enhanced Files
+- `backend/public/index.html` - Smart Bets page with analytics
+- `backend/public/dashboard.html` - Dashboard with P/L analytics
+- `backend/server.js` - Smart Bets API endpoint
+
+### Dependencies Added
+- Chart.js 4.4.0 (CDN) - For P/L visualization
 
 ---
 
 ## 🚀 Quick Start
 
-### Installation
+### View Smart Bets
 ```powershell
-git clone https://github.com/dannythehat/football-betting-buddi.git
-cd football-betting-buddi
-cd backend && npm install
-cd ../frontend && npm install
-cd ..
+.\dev.ps1
+# Open http://127.0.0.1:8081/
 ```
 
-### Running
+### Generate Smart Bets
 ```powershell
-.\dev.ps1              # Start servers
-.\workflow.ps1 -Next   # See next task
+node scripts/generate-smart-bets.js
+node scripts/generate-smart-bets.js 2025-11-05  # Specific date
 ```
 
-### AI Development
+### Test Dashboard with Mock Results
 ```powershell
-.\workflow.ps1 -Summary    # Get context for OpenAI
-.\workflow.ps1 -Start "X.X"    # Start task
-.\workflow.ps1 -Complete "X.X" # Finish task
+node scripts/update-mock-results.js
+# Open http://127.0.0.1:8081/dashboard.html
+# Load mock results in browser console
+```
+
+### Export Data
+```
+1. Open http://127.0.0.1:8081/dashboard.html
+2. Click "📥 Export CSV" button
+3. CSV downloads automatically
 ```
 
 ---
 
-## 📊 Metrics
+## 📈 Metrics
 
-- **Total Commits**: 14
-- **Files Created**: 18+
-- **Lines of Code**: ~3,000
-- **Documentation**: 7 major files
-- **Development Time**: 2 days
-- **Phase 1 Progress**: 20%
+### Week 2 Totals
+- **Days Completed**: 4/4 (100%)
+- **Commits**: 12+
+- **Files Created**: 5
+- **Lines Added**: ~2,000
+- **Features Delivered**: 15+
+- **API Endpoints Enhanced**: 1 (`/api/smart-bets`)
+- **Pages Enhanced**: 2 (Smart Bets, Dashboard)
 
----
-
-## 🎓 What We Learned
-
-### Day 1 Insights
-- PowerShell launcher significantly improves workflow
-- Logging to files helps debugging
-- Clean repo structure pays off early
-- Documentation-first approach clarifies vision
-
-### Day 2 Insights
-- Comprehensive documentation enables AI collaboration
-- Small daily tasks improve focus
-- Workflow automation is CRITICAL for AI-assisted development
-- WORKFLOW_STATE.json solves the "where are we?" problem
-- PowerShell scripts make AI collaboration seamless
+### Cumulative Totals
+- **Total Commits**: 21+
+- **Files Created**: 26+
+- **Lines Added**: ~5,200+
+- **API Endpoints**: 3 (`/api/health`, `/api/smart-bets`, `/api/fixtures`)
+- **Documentation Files**: 14+
+- **Pages**: 3 (Smart Bets, Dashboard, Fixtures)
+- **Scripts**: 2 (generate-smart-bets, update-mock-results)
 
 ---
 
-## 🔜 What's Next (v0.0.2-fixtures)
+## 🎓 Key Learnings
 
-### Day 3 Tasks
-- [ ] Fixtures JSON schema
-- [ ] Mock fixtures data (10-15 samples)
-- [ ] Backend fixtures endpoint (`GET /api/fixtures`)
+### Week 2 Insights
+- **Chart.js perfect for MVP** - Lightweight, no build step
+- **Client-side CSV export** - No backend complexity
+- **LocalStorage ideal for MVP** - No database needed yet
+- **Visual analytics drive engagement** - Charts make data accessible
+- **Breakdown algorithm reusable** - Generic groupBy function
+- **Date filtering essential** - Time-based analysis critical
 
-### Day 4 Tasks
-- [ ] Frontend fixtures browser
-- [ ] Filtering by league/date/status
-- [ ] End-to-end testing
+---
 
-**Target Release**: End of Week 1 (2025-11-08)
+## 🔜 What's Next (Week 3)
+
+### User Dashboard Enhancement
+- [ ] Bet history timeline
+- [ ] Advanced statistics
+- [ ] Performance trends
+- [ ] Betting patterns analysis
+- [ ] Goal setting and tracking
+- [ ] Notifications system
+
+**Target**: End of Week 3
 
 ---
 
 ## 🐛 Known Issues
 
 - No critical blockers
-- Backend status endpoint not yet implemented (planned for Day 3)
-- Frontend status card not yet implemented (planned for Day 3)
-- No tests yet (planned for Phase 2)
+- Tests not yet implemented (planned for Phase 2)
+- Linting not configured (planned for Phase 2)
+- Deployment not set up (planned for Phase 3)
 
 ---
 
-## 🤝 Contributing
+## 🎉 Milestones
 
-This is currently a private project under active development. Contributions will be welcomed once the MVP is stable.
+- ✅ Week 1 Complete (Core Infrastructure)
+- ✅ Week 2 Complete (Smart Bets Foundation)
+- ✅ Smart Bets Generator Working
+- ✅ Smart Bets API Enhanced
+- ✅ User Dashboard with Tracking
+- ✅ P/L Analytics with Charts
+- ✅ CSV Export Functionality
+- ✅ Performance Breakdowns
 
 ---
 
-## 📞 Contact
+## 📦 Previous Releases
 
-- **Developer**: Danny Allan
-- **GitHub**: [@dannythehat](https://github.com/dannythehat)
-- **Repository**: [football-betting-buddi](https://github.com/dannythehat/football-betting-buddi)
+### v0.0.2-fixtures (2025-11-05)
+- Fixtures data layer
+- Fixtures browser UI
+- Advanced filtering
+- Week 1 complete
 
----
-
-## 🙏 Acknowledgments
-
-- **OpenAI** for GPT-powered development assistance
-- **React & Vite** for modern frontend tooling
-- **Express.js** for robust backend framework
-- **PowerShell** for automation capabilities
+### v0.0.1-mvp-skeleton (2025-11-05)
+- MVP skeleton
+- Backend API
+- Frontend shell
+- PowerShell automation
+- AI workflow system
 
 ---
 
