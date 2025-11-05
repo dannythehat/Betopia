@@ -1,3 +1,7 @@
+<div align="center">
+
+![Betopia Logo](https://client-uploads.nyc3.digitaloceanspaces.com/images/3c87493f-e2c3-415f-b470-51a2c8db8f55/2025-11-05T02-02-00-480Z-db09174a.jpg)
+
 # ✨ Betopia
 
 **AI-Powered Sports Betting Intelligence Platform**
@@ -6,6 +10,8 @@
 
 [![Status](https://img.shields.io/badge/status-MVP%20Development-yellow)](https://github.com/dannythehat/betopia)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+</div>
 
 ---
 
@@ -343,6 +349,10 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
+<div align="center">
+
 **Built with ✨ and 🤖 by the Betopia team**
 
 *Your Betting Utopia - Where Smart Bets Live*
+
+</div>
