@@ -1,23 +1,23 @@
-# ⚽ FootballBettingBuddi
+# ✨ Betopia
 
-**AI-Powered Football Betting Intelligence Platform**
+**AI-Powered Sports Betting Intelligence Platform**
 
-> Transform football data into actionable betting insights with transparent AI predictions, multi-market coverage, and confidence-ranked smart bets.
+> Your Betting Utopia - Transform sports data into actionable betting insights with transparent AI predictions, multi-market coverage, and confidence-ranked smart bets.
 
-[![Status](https://img.shields.io/badge/status-MVP%20Development-yellow)](https://github.com/dannythehat/football-betting-buddi)
+[![Status](https://img.shields.io/badge/status-MVP%20Development-yellow)](https://github.com/dannythehat/betopia)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
 
-## 🎯 What is FootballBettingBuddi?
+## 🎯 What is Betopia?
 
-FootballBettingBuddi is an **AI-powered football betting intelligence platform** that helps users make smarter, data-driven betting decisions across multiple markets and leagues worldwide.
+Betopia is an **AI-powered sports betting intelligence platform** that helps users make smarter, data-driven betting decisions across multiple markets and leagues worldwide.
 
 ### Core Value Proposition
 
 - **🤖 Dual AI Strategy**: Batch-processed daily Smart Bets + on-demand market predictions
 - **📊 Multi-Market Coverage**: 1X2, Over/Under, BTTS, Asian Handicap, Corners, Cards
-- **🌍 Global Leagues**: Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and more
+- **🌍 Global Sports**: Football (Premier League, La Liga, Serie A, Bundesliga, Ligue 1), with cricket, tennis, basketball coming soon
 - **🔍 Transparent Reasoning**: Natural language explanations with confidence scores
 - **📈 Historical Tracking**: Performance validation and ROI analytics
 
@@ -114,8 +114,8 @@ FootballBettingBuddi is an **AI-powered football betting intelligence platform**
 
 ```powershell
 # Clone repository
-git clone https://github.com/dannythehat/football-betting-buddi.git
-cd football-betting-buddi
+git clone https://github.com/dannythehat/betopia.git
+cd betopia
 
 # Install backend dependencies
 cd backend
@@ -324,7 +324,7 @@ This is currently a private project under active development. Contributions will
 - **Developer**: Danny Allan
 - **Email**: danqawsedef@gmail.com
 - **GitHub**: [@dannythehat](https://github.com/dannythehat)
-- **Repository**: [football-betting-buddi](https://github.com/dannythehat/football-betting-buddi)
+- **Repository**: [betopia](https://github.com/dannythehat/betopia)
 
 ---
 
@@ -343,6 +343,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with ⚽ and 🤖 by the FootballBettingBuddi team**
+**Built with ✨ and 🤖 by the Betopia team**
 
-*Making betting smarter, one prediction at a time.*
+*Your Betting Utopia - Where Smart Bets Live*
