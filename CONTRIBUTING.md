@@ -1,6 +1,6 @@
-# 🤝 Contributing to FootballBettingBuddi
+# 🤝 Contributing to Betopia
 
-Thank you for your interest in contributing to FootballBettingBuddi! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Betopia! This document provides guidelines and instructions for contributing to the project.
 
 ---
 
@@ -54,12 +54,12 @@ We are committed to providing a welcoming and inclusive environment for all cont
 1. **Fork the repository** on GitHub
 2. **Clone your fork**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/football-betting-buddi.git
-   cd football-betting-buddi
+   git clone https://github.com/YOUR_USERNAME/betopia.git
+   cd betopia
    ```
 3. **Add upstream remote**:
    ```bash
-   git remote add upstream https://github.com/dannythehat/football-betting-buddi.git
+   git remote add upstream https://github.com/dannythehat/betopia.git
    ```
 4. **Install dependencies**:
    ```bash
@@ -458,8 +458,8 @@ When adding features, update:
 ## Questions?
 
 - **Email**: danqawsedef@gmail.com
-- **GitHub Issues**: [Create an issue](https://github.com/dannythehat/football-betting-buddi/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/dannythehat/football-betting-buddi/discussions)
+- **GitHub Issues**: [Create an issue](https://github.com/dannythehat/betopia/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/dannythehat/betopia/discussions)
 
 ---
 
@@ -472,6 +472,8 @@ Contributors will be recognized in:
 
 ---
 
-**Thank you for contributing to FootballBettingBuddi! ⚽🤖**
+**Thank you for contributing to Betopia! ✨🤖**
+
+*Your Betting Utopia - Where Smart Bets Live*
 
 *Last Updated: 2025-11-05*
