@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>My Dashboard — FootballBettingBuddi</title>
+  <title>My Dashboard — Betopia</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="/logo.png" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root { color-scheme: dark; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0b0b12; color:#e8e6ff; }
     header { padding:20px; background:linear-gradient(90deg,#0b0b12,#1a1030 50%,#241245); border-bottom:1px solid #2a2151; }
-    h1 { margin:0; font-size:22px; letter-spacing:0.3px; }
+    h1 { margin:0; font-size:22px; letter-spacing:0.3px; display:flex; align-items:center; gap:12px; }
+    h1 img { height:32px; width:32px; }
     h2 { font-size:18px; margin:24px 0 12px; opacity:0.9; }
     #status { font-size:12px; opacity:0.8; margin-top:6px; }
     main { padding:20px; max-width: 1400px; margin: 0 auto; }
@@ -73,7 +75,61 @@
     }
     .filter-group select:focus, .filter-group input:focus { outline:none; border-color:#5a4a9f; }
     
-    /* Bet Cards */
+    /* View Toggle */
+    .view-toggle { 
+      display:flex; gap:8px; margin-bottom:20px; background:#141426; 
+      border:1px solid #2a2151; border-radius:12px; padding:8px; width:fit-content;
+    }
+    .view-btn { 
+      padding:8px 16px; border-radius:8px; background:transparent; 
+      border:1px solid transparent; color:#e8e6ff; cursor:pointer; 
+      font-size:14px; font-weight:600; transition: all 0.2s;
+    }
+    .view-btn:hover { background:#1a1030; }
+    .view-btn.active { background:#5a4a9f; border-color:#7a6abf; }
+    
+    /* Timeline View */
+    .timeline-container { position:relative; }
+    .timeline-date-group { margin-bottom:32px; position:relative; }
+    .timeline-date-header { 
+      position:sticky; top:0; z-index:10; background:#0b0b12; 
+      padding:12px 0; margin-bottom:16px; border-bottom:2px solid #5a4a9f;
+      display:flex; align-items:center; gap:12px;
+    }
+    .timeline-date-badge { 
+      background:#5a4a9f; color:#fff; padding:6px 12px; 
+      border-radius:999px; font-size:13px; font-weight:600;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+    .timeline-date-label { font-size:16px; font-weight:600; }
+    .timeline-bet-count { font-size:12px; opacity:0.7; margin-left:auto; }
+    
+    .timeline-line { 
+      position:absolute; left:20px; top:60px; bottom:0; 
+      width:2px; background:linear-gradient(180deg, #5a4a9f, transparent);
+    }
+    
+    .timeline-bets { display:flex; flex-direction:column; gap:12px; padding-left:48px; }
+    
+    .timeline-card { 
+      background:#141426; border:1px solid #2a2151; border-radius:12px; 
+      padding:14px; transition: all 0.2s; position:relative;
+    }
+    .timeline-card::before {
+      content:''; position:absolute; left:-36px; top:20px;
+      width:12px; height:12px; border-radius:50%;
+      background:#5a4a9f; border:3px solid #0b0b12;
+    }
+    .timeline-card:hover { border-color:#5a4a9f; transform: translateX(4px); }
+    
+    .timeline-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .timeline-teams { font-size:15px; font-weight:600; }
+    .timeline-time { font-size:11px; opacity:0.6; margin-top:4px; }
+    
+    .timeline-bet-info { display:flex; gap:16px; flex-wrap:wrap; font-size:13px; margin-top:8px; }
+    .timeline-bet-info span { display:flex; align-items:center; gap:6px; opacity:0.9; }
+    
+    /* Bet Cards (List View) */
     .card { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:18px; margin-bottom:14px; transition: all 0.2s; position:relative; }
     .card:hover { border-color:#5a4a9f; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(90,74,159,0.2); }
     .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
@@ -118,11 +174,12 @@
     .empty-state a:hover { background:#7a6abf; transform: scale(1.05); }
     
     .muted { opacity:0.7; }
+    .hidden { display:none; }
   </style>
 </head>
 <body>
   <header>
-    <h1>📊 My Dashboard — FootballBettingBuddi</h1>
+    <h1><img src="/logo.png" alt="Betopia" /> 📊 My Dashboard — Betopia</h1>
     <nav>
       <a href="/">Smart Bets</a>
       <a href="/dashboard.html" class="active">My Dashboard</a>
@@ -234,6 +291,12 @@
       </div>
     </div>
 
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="list" onclick="toggleView('list')">📋 List View</button>
+      <button class="view-btn" data-view="timeline" onclick="toggleView('timeline')">📅 Timeline View</button>
+    </div>
+
     <!-- Saved Bets List -->
     <h2>📋 My Saved Bets</h2>
     <div id="bets-container"></div>
@@ -243,6 +306,7 @@
     // LocalStorage key
     const STORAGE_KEY = 'fbb_saved_bets';
     let plChart = null;
+    let currentView = 'list';
 
     // Load saved bets from localStorage
     function loadSavedBets() {
@@ -514,12 +578,122 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `football-betting-buddi-${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `betopia-bets-${new Date().toISOString().split('T')[0]}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
 
-    // Render bet card
+    // Get date label (Today, Yesterday, etc.)
+    function getDateLabel(date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const betDate = new Date(date);
+      betDate.setHours(0, 0, 0, 0);
+      
+      const diffDays = Math.floor((today - betDate) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return betDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+      return betDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // Group bets by date
+    function groupBetsByDate(bets) {
+      const groups = {};
+      
+      bets.forEach(bet => {
+        const dateKey = new Date(bet.addedAt).toDateString();
+        if (!groups[dateKey]) {
+          groups[dateKey] = [];
+        }
+        groups[dateKey].push(bet);
+      });
+
+      return Object.entries(groups)
+        .map(([dateKey, bets]) => ({
+          date: new Date(dateKey),
+          dateKey,
+          label: getDateLabel(dateKey),
+          bets,
+          count: bets.length
+        }))
+        .sort((a, b) => b.date - a.date);
+    }
+
+    // Render timeline card
+    function renderTimelineCard(bet) {
+      const statusEmoji = {
+        pending: '⏳',
+        won: '✅',
+        lost: '❌',
+        void: '⚪'
+      };
+
+      return `
+        <div class="timeline-card">
+          <div class="timeline-card-header">
+            <div>
+              <div class="timeline-teams">${bet.homeTeam} vs ${bet.awayTeam}</div>
+              <div class="timeline-time">⏰ ${new Date(bet.kickoff).toLocaleString('en-GB', { 
+                hour: '2-digit', minute: '2-digit' 
+              })}</div>
+            </div>
+            <span class="status-badge ${bet.status}">
+              ${statusEmoji[bet.status]} ${bet.status.toUpperCase()}
+            </span>
+          </div>
+          <div class="timeline-bet-info">
+            <span>🏆 ${bet.league}</span>
+            <span>📊 ${bet.market}</span>
+            <span>🎯 ${bet.selection}</span>
+            <span>💰 ${bet.odds.toFixed(2)}</span>
+            <span>📈 ${(bet.probability * 100).toFixed(1)}%</span>
+          </div>
+          <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+            <button class="btn-remove" onclick="removeBet('${bet.id}')">🗑️ Remove</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render timeline view
+    function renderTimelineView(bets) {
+      const groups = groupBetsByDate(bets);
+      
+      if (groups.length === 0) {
+        return `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+            </svg>
+            <h3>No Bets Match Filters</h3>
+            <p>Try adjusting your filters to see more bets.</p>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="timeline-container">
+          ${groups.map(group => `
+            <div class="timeline-date-group">
+              <div class="timeline-date-header">
+                <span class="timeline-date-badge">📅 ${group.label}</span>
+                <span class="timeline-date-label">${group.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                <span class="timeline-bet-count">${group.count} bet${group.count !== 1 ? 's' : ''}</span>
+              </div>
+              <div class="timeline-line"></div>
+              <div class="timeline-bets">
+                ${group.bets.map(renderTimelineCard).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Render bet card (list view)
     function renderBetCard(bet) {
       const statusEmoji = {
         pending: '⏳',
@@ -568,6 +742,15 @@
           </div>
         </div>
       `;
+    }
+
+    // Toggle view
+    function toggleView(view) {
+      currentView = view;
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+      });
+      renderDashboard();
     }
 
     // Apply filters and sorting
@@ -633,7 +816,11 @@
           </div>
         `;
       } else {
-        container.innerHTML = filteredBets.map(renderBetCard).join('');
+        if (currentView === 'timeline') {
+          container.innerHTML = renderTimelineView(filteredBets);
+        } else {
+          container.innerHTML = filteredBets.map(renderBetCard).join('');
+        }
       }
 
       document.getElementById('status').textContent = `${filteredBets.length} bet${filteredBets.length !== 1 ? 's' : ''} displayed`;
