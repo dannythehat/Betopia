@@ -64,6 +64,31 @@
     .breakdown-stat-value.green { color:#2a914a; }
     .breakdown-stat-value.red { color:#b54949; }
     
+    /* Advanced Statistics */
+    .stats-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap:16px; margin-top:20px; }
+    .stat-card { background:#0b0b12; border:1px solid #2a2151; border-radius:10px; padding:16px; }
+    .stat-card-title { font-size:14px; font-weight:600; opacity:0.9; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .stat-item { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #1a1a2e; }
+    .stat-item:last-child { border-bottom:none; }
+    .stat-label { font-size:13px; opacity:0.9; }
+    .stat-values { display:flex; gap:20px; font-size:12px; }
+    .stat-value-group { display:flex; flex-direction:column; align-items:flex-end; }
+    .stat-value-label { opacity:0.6; font-size:10px; }
+    .stat-value { font-weight:600; margin-top:2px; }
+    
+    /* Streak Display */
+    .streak-display { display:flex; gap:16px; margin-bottom:16px; }
+    .streak-badge { 
+      flex:1; background:#0b0b12; border:1px solid #2a2151; border-radius:8px; 
+      padding:12px; text-align:center;
+    }
+    .streak-badge.current { border-color:#5a4a9f; }
+    .streak-type { font-size:11px; opacity:0.7; text-transform:uppercase; letter-spacing:0.5px; }
+    .streak-count { font-size:24px; font-weight:700; margin:8px 0; }
+    .streak-count.win { color:#2a914a; }
+    .streak-count.loss { color:#b54949; }
+    .streak-dates { font-size:10px; opacity:0.6; }
+    
     /* Filters */
     .filters { background:#141426; border:1px solid #2a2151; border-radius:14px; padding:16px; margin-bottom:20px; }
     .filter-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px; }
@@ -247,6 +272,49 @@
       </div>
     </div>
 
+    <!-- Advanced Statistics -->
+    <div class="analytics-section">
+      <div class="section-header">
+        <h2 class="section-title">📊 Advanced Statistics</h2>
+      </div>
+
+      <!-- Win Rate by Time of Day -->
+      <div class="stat-card" style="margin-bottom:20px;">
+        <div class="stat-card-title">⏰ Win Rate by Time of Day</div>
+        <div class="chart-container" style="height:250px;">
+          <canvas id="timeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <!-- League Performance -->
+        <div class="stat-card">
+          <div class="stat-card-title">🏆 Best Performing Leagues</div>
+          <div id="stats-leagues"></div>
+        </div>
+
+        <!-- Market Performance -->
+        <div class="stat-card">
+          <div class="stat-card-title">📈 Market Performance</div>
+          <div id="stats-markets"></div>
+        </div>
+
+        <!-- Confidence Validation -->
+        <div class="stat-card">
+          <div class="stat-card-title">🎯 Confidence Validation</div>
+          <div id="stats-confidence"></div>
+        </div>
+
+        <!-- Streak Analysis -->
+        <div class="stat-card">
+          <div class="stat-card-title">🔥 Streak Analysis</div>
+          <div class="streak-display" id="streak-display"></div>
+          <div id="streak-history"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Filters -->
     <div class="filters">
       <div class="filter-grid">
@@ -306,6 +374,7 @@
     // LocalStorage key
     const STORAGE_KEY = 'fbb_saved_bets';
     let plChart = null;
+    let timeChart = null;
     let currentView = 'list';
 
     // Load saved bets from localStorage
@@ -540,6 +609,384 @@
           </div>
         </div>
       `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+    }
+
+    // Get win rate by time of day
+    function getWinRateByTimeOfDay(bets) {
+      const periods = {
+        'Morning\n(6am-12pm)': { won: 0, lost: 0, pl: 0 },
+        'Afternoon\n(12pm-6pm)': { won: 0, lost: 0, pl: 0 },
+        'Evening\n(6pm-12am)': { won: 0, lost: 0, pl: 0 },
+        'Night\n(12am-6am)': { won: 0, lost: 0, pl: 0 }
+      };
+
+      const stake = 10;
+      bets.forEach(bet => {
+        if (bet.status !== 'won' && bet.status !== 'lost') return;
+        
+        const hour = new Date(bet.kickoff).getHours();
+        let period;
+        if (hour >= 6 && hour < 12) period = 'Morning\n(6am-12pm)';
+        else if (hour >= 12 && hour < 18) period = 'Afternoon\n(12pm-6pm)';
+        else if (hour >= 18 && hour < 24) period = 'Evening\n(6pm-12am)';
+        else period = 'Night\n(12am-6am)';
+
+        if (bet.status === 'won') {
+          periods[period].won++;
+          periods[period].pl += (bet.odds - 1) * stake;
+        } else {
+          periods[period].lost++;
+          periods[period].pl -= stake;
+        }
+      });
+
+      return Object.entries(periods).map(([name, stats]) => ({
+        name,
+        ...stats,
+        total: stats.won + stats.lost,
+        winRate: stats.won + stats.lost > 0 ? ((stats.won / (stats.won + stats.lost)) * 100).toFixed(1) : 0,
+        roi: stats.won + stats.lost > 0 ? ((stats.pl / ((stats.won + stats.lost) * stake)) * 100).toFixed(1) : 0
+      }));
+    }
+
+    // Render time of day chart
+    function renderTimeChart(bets) {
+      const timeData = getWinRateByTimeOfDay(bets);
+      
+      const ctx = document.getElementById('timeChart');
+      if (timeChart) timeChart.destroy();
+
+      timeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: timeData.map(d => d.name),
+          datasets: [{
+            label: 'Win Rate %',
+            data: timeData.map(d => parseFloat(d.winRate)),
+            backgroundColor: timeData.map(d => parseFloat(d.winRate) >= 50 ? 'rgba(42, 145, 74, 0.8)' : 'rgba(181, 73, 73, 0.8)'),
+            borderColor: timeData.map(d => parseFloat(d.winRate) >= 50 ? '#2a914a' : '#b54949'),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#141426',
+              titleColor: '#e8e6ff',
+              bodyColor: '#e8e6ff',
+              borderColor: '#2a2151',
+              borderWidth: 1,
+              padding: 12,
+              callbacks: {
+                label: (context) => {
+                  const data = timeData[context.dataIndex];
+                  return [
+                    `Win Rate: ${data.winRate}%`,
+                    `W/L: ${data.won}/${data.lost}`,
+                    `P/L: £${data.pl.toFixed(2)}`,
+                    `ROI: ${data.roi}%`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: '#2a2151' },
+              ticks: { 
+                color: '#e8e6ff',
+                callback: value => `${value}%`
+              }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#e8e6ff', font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // Get league performance
+    function getLeaguePerformance(bets) {
+      const stake = 10;
+      const leagues = {};
+
+      bets.forEach(bet => {
+        if (bet.status !== 'won' && bet.status !== 'lost') return;
+        
+        const league = bet.league || 'Unknown';
+        if (!leagues[league]) {
+          leagues[league] = { won: 0, lost: 0, pl: 0, totalOdds: 0 };
+        }
+
+        if (bet.status === 'won') {
+          leagues[league].won++;
+          leagues[league].pl += (bet.odds - 1) * stake;
+        } else {
+          leagues[league].lost++;
+          leagues[league].pl -= stake;
+        }
+        leagues[league].totalOdds += bet.odds;
+      });
+
+      return Object.entries(leagues)
+        .map(([name, stats]) => {
+          const total = stats.won + stats.lost;
+          return {
+            name,
+            ...stats,
+            total,
+            winRate: ((stats.won / total) * 100).toFixed(1),
+            avgOdds: (stats.totalOdds / total).toFixed(2),
+            roi: ((stats.pl / (total * stake)) * 100).toFixed(1)
+          };
+        })
+        .sort((a, b) => parseFloat(b.roi) - parseFloat(a.roi))
+        .slice(0, 5);
+    }
+
+    // Get market performance
+    function getMarketPerformance(bets) {
+      const stake = 10;
+      const markets = {};
+
+      bets.forEach(bet => {
+        if (bet.status !== 'won' && bet.status !== 'lost') return;
+        
+        const market = bet.market || 'Unknown';
+        if (!markets[market]) {
+          markets[market] = { won: 0, lost: 0, pl: 0, totalOdds: 0 };
+        }
+
+        if (bet.status === 'won') {
+          markets[market].won++;
+          markets[market].pl += (bet.odds - 1) * stake;
+        } else {
+          markets[market].lost++;
+          markets[market].pl -= stake;
+        }
+        markets[market].totalOdds += bet.odds;
+      });
+
+      return Object.entries(markets)
+        .map(([name, stats]) => {
+          const total = stats.won + stats.lost;
+          return {
+            name,
+            ...stats,
+            total,
+            winRate: ((stats.won / total) * 100).toFixed(1),
+            avgOdds: (stats.totalOdds / total).toFixed(2),
+            roi: ((stats.pl / (total * stake)) * 100).toFixed(1)
+          };
+        })
+        .sort((a, b) => parseFloat(b.roi) - parseFloat(a.roi));
+    }
+
+    // Get confidence validation
+    function getConfidenceValidation(bets) {
+      const stake = 10;
+      const levels = {
+        'High (≥65%)': { expected: 70, won: 0, lost: 0, pl: 0 },
+        'Medium (55-64%)': { expected: 60, won: 0, lost: 0, pl: 0 },
+        'Low (<55%)': { expected: 50, won: 0, lost: 0, pl: 0 }
+      };
+
+      bets.forEach(bet => {
+        if (bet.status !== 'won' && bet.status !== 'lost') return;
+        
+        let level;
+        if (bet.probability >= 0.65) level = 'High (≥65%)';
+        else if (bet.probability >= 0.55) level = 'Medium (55-64%)';
+        else level = 'Low (<55%)';
+
+        if (bet.status === 'won') {
+          levels[level].won++;
+          levels[level].pl += (bet.odds - 1) * stake;
+        } else {
+          levels[level].lost++;
+          levels[level].pl -= stake;
+        }
+      });
+
+      return Object.entries(levels).map(([name, stats]) => {
+        const total = stats.won + stats.lost;
+        const actual = total > 0 ? ((stats.won / total) * 100).toFixed(1) : 0;
+        return {
+          name,
+          expected: stats.expected,
+          actual: parseFloat(actual),
+          delta: (parseFloat(actual) - stats.expected).toFixed(1),
+          total,
+          won: stats.won,
+          lost: stats.lost,
+          pl: stats.pl,
+          roi: total > 0 ? ((stats.pl / (total * stake)) * 100).toFixed(1) : 0
+        };
+      });
+    }
+
+    // Get streak analysis
+    function getStreakAnalysis(bets) {
+      const settledBets = bets
+        .filter(b => b.status === 'won' || b.status === 'lost')
+        .sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
+
+      if (settledBets.length === 0) {
+        return {
+          current: { type: 'none', count: 0 },
+          longestWin: { count: 0 },
+          longestLoss: { count: 0 }
+        };
+      }
+
+      let currentStreak = { type: settledBets[settledBets.length - 1].status === 'won' ? 'win' : 'loss', count: 1, startDate: settledBets[settledBets.length - 1].addedAt };
+      let longestWin = { count: 0, startDate: null, endDate: null };
+      let longestLoss = { count: 0, startDate: null, endDate: null };
+      
+      let tempStreak = { type: settledBets[0].status === 'won' ? 'win' : 'loss', count: 1, startDate: settledBets[0].addedAt };
+
+      for (let i = settledBets.length - 2; i >= 0; i--) {
+        const bet = settledBets[i];
+        const type = bet.status === 'won' ? 'win' : 'loss';
+        
+        if (i === settledBets.length - 2) {
+          if (type === currentStreak.type) {
+            currentStreak.count++;
+            currentStreak.startDate = bet.addedAt;
+          }
+        }
+      }
+
+      for (let i = 1; i < settledBets.length; i++) {
+        const bet = settledBets[i];
+        const type = bet.status === 'won' ? 'win' : 'loss';
+
+        if (type === tempStreak.type) {
+          tempStreak.count++;
+        } else {
+          if (tempStreak.type === 'win' && tempStreak.count > longestWin.count) {
+            longestWin = { count: tempStreak.count, startDate: tempStreak.startDate, endDate: settledBets[i - 1].addedAt };
+          } else if (tempStreak.type === 'loss' && tempStreak.count > longestLoss.count) {
+            longestLoss = { count: tempStreak.count, startDate: tempStreak.startDate, endDate: settledBets[i - 1].addedAt };
+          }
+          tempStreak = { type, count: 1, startDate: bet.addedAt };
+        }
+      }
+
+      if (tempStreak.type === 'win' && tempStreak.count > longestWin.count) {
+        longestWin = { count: tempStreak.count, startDate: tempStreak.startDate, endDate: settledBets[settledBets.length - 1].addedAt };
+      } else if (tempStreak.type === 'loss' && tempStreak.count > longestLoss.count) {
+        longestLoss = { count: tempStreak.count, startDate: tempStreak.startDate, endDate: settledBets[settledBets.length - 1].addedAt };
+      }
+
+      return { current: currentStreak, longestWin, longestLoss };
+    }
+
+    // Render advanced statistics
+    function renderAdvancedStats(bets) {
+      const settledBets = bets.filter(b => b.status === 'won' || b.status === 'lost');
+      
+      if (settledBets.length === 0) {
+        document.getElementById('stats-leagues').innerHTML = '<div style="opacity:0.6; text-align:center; padding:20px;">No settled bets yet</div>';
+        document.getElementById('stats-markets').innerHTML = '<div style="opacity:0.6; text-align:center; padding:20px;">No settled bets yet</div>';
+        document.getElementById('stats-confidence').innerHTML = '<div style="opacity:0.6; text-align:center; padding:20px;">No settled bets yet</div>';
+        document.getElementById('streak-display').innerHTML = '<div style="opacity:0.6; text-align:center; padding:20px;">No settled bets yet</div>';
+        document.getElementById('streak-history').innerHTML = '';
+        return;
+      }
+
+      // League Performance
+      const leagues = getLeaguePerformance(settledBets);
+      document.getElementById('stats-leagues').innerHTML = leagues.map(item => `
+        <div class="stat-item">
+          <span class="stat-label">${item.name}</span>
+          <div class="stat-values">
+            <div class="stat-value-group">
+              <span class="stat-value-label">Win%</span>
+              <span class="stat-value">${item.winRate}%</span>
+            </div>
+            <div class="stat-value-group">
+              <span class="stat-value-label">ROI</span>
+              <span class="stat-value ${parseFloat(item.roi) >= 0 ? 'green' : 'red'}">${item.roi}%</span>
+            </div>
+            <div class="stat-value-group">
+              <span class="stat-value-label">P/L</span>
+              <span class="stat-value ${item.pl >= 0 ? 'green' : 'red'}">£${item.pl.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+
+      // Market Performance
+      const markets = getMarketPerformance(settledBets);
+      document.getElementById('stats-markets').innerHTML = markets.map(item => `
+        <div class="stat-item">
+          <span class="stat-label">${item.name}</span>
+          <div class="stat-values">
+            <div class="stat-value-group">
+              <span class="stat-value-label">Win%</span>
+              <span class="stat-value">${item.winRate}%</span>
+            </div>
+            <div class="stat-value-group">
+              <span class="stat-value-label">Avg Odds</span>
+              <span class="stat-value">${item.avgOdds}</span>
+            </div>
+            <div class="stat-value-group">
+              <span class="stat-value-label">ROI</span>
+              <span class="stat-value ${parseFloat(item.roi) >= 0 ? 'green' : 'red'}">${item.roi}%</span>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+
+      // Confidence Validation
+      const confidence = getConfidenceValidation(settledBets);
+      document.getElementById('stats-confidence').innerHTML = confidence.map(item => `
+        <div class="stat-item">
+          <span class="stat-label">${item.name}</span>
+          <div class="stat-values">
+            <div class="stat-value-group">
+              <span class="stat-value-label">Expected</span>
+              <span class="stat-value">${item.expected}%</span>
+            </div>
+            <div class="stat-value-group">
+              <span class="stat-value-label">Actual</span>
+              <span class="stat-value">${item.actual}%</span>
+            </div>
+            <div class="stat-value-group">
+              <span class="stat-value-label">Delta</span>
+              <span class="stat-value ${parseFloat(item.delta) >= 0 ? 'green' : 'red'}">${item.delta > 0 ? '+' : ''}${item.delta}%</span>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="opacity:0.6; text-align:center; padding:20px;">No data</div>';
+
+      // Streak Analysis
+      const streaks = getStreakAnalysis(settledBets);
+      document.getElementById('streak-display').innerHTML = `
+        <div class="streak-badge current">
+          <div class="streak-type">Current Streak</div>
+          <div class="streak-count ${streaks.current.type}">${streaks.current.count}</div>
+          <div class="streak-dates">${streaks.current.type === 'win' ? '🔥 Winning' : '❄️ Losing'}</div>
+        </div>
+        <div class="streak-badge">
+          <div class="streak-type">Longest Win</div>
+          <div class="streak-count win">${streaks.longestWin.count}</div>
+          <div class="streak-dates">${streaks.longestWin.count > 0 ? new Date(streaks.longestWin.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '-'}</div>
+        </div>
+        <div class="streak-badge">
+          <div class="streak-type">Longest Loss</div>
+          <div class="streak-count loss">${streaks.longestLoss.count}</div>
+          <div class="streak-dates">${streaks.longestLoss.count > 0 ? new Date(streaks.longestLoss.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '-'}</div>
+        </div>
+      `;
     }
 
     // Export to CSV
@@ -799,6 +1246,8 @@
       renderSummary(stats);
       renderPLChart(allBets);
       renderBreakdown(allBets);
+      renderTimeChart(allBets);
+      renderAdvancedStats(allBets);
 
       const filteredBets = filterAndSortBets(allBets);
       const container = document.getElementById('bets-container');
